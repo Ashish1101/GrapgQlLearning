@@ -40,6 +40,8 @@ const Todos = () => {
    //this code write to the cache manually
    //it does not send amy newtwork request again
 
+   //i used immer library to update cache in deep nested object
+
    //METHOD 2
 
    const [createTask , {error , loading}] = useMutation(CREATE_TASK , {
