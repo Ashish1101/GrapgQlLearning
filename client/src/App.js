@@ -1,11 +1,13 @@
 import React from 'react'
-import {ApolloClient, InMemoryCache , ApolloProvider , createHttpLink} from '@apollo/client'
+import {ApolloClient, InMemoryCache , ApolloProvider , createHttpLink, useApolloClient, gql } from '@apollo/client'
 import {BrowserRouter as Router , Redirect, Route , Switch } from 'react-router-dom'
 import Register from './Components/Register'
 import { setContext } from '@apollo/client/link/context';
 import Login from './Components/Login'
 import Navigation from './Components/Navigation'
 import Todos from './Components/Todos'
+import { GET_ALL_TODO } from './graphql/Query';
+
 
 const httpLink = createHttpLink({
   uri:"http://localhost:5000/graphql"
@@ -28,7 +30,11 @@ const client = new ApolloClient({
 
 
 
+
+
+
 function App() {
+
   const token = localStorage.getItem('userToken')
   return (
     <ApolloProvider client={client}>

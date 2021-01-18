@@ -20,6 +20,7 @@ mongoDB();
 app.use(isAuth);
 
 
+
 app.use('/graphql' , graphqlHTTP({
     //inside buildschema we design our models
 

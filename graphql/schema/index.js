@@ -17,6 +17,7 @@ module.exports = buildSchema(`
         title : String!
         details : String!
         user : User
+        msg : String!
         date : String!
        }
 
@@ -43,11 +44,18 @@ module.exports = buildSchema(`
            userId : ID!
        }
 
+       type deleteTask {
+           msg: String!
+           title: String!
+           _id : ID!
+       }
+
        type Mutation {
            login(email:String! , password:String!) : AuthData!
            addUser(email : String! , password : String!) : User
            deleteUser(_id: ID!) : User
            updateUser(input : userInput) : User
            createTask(title:String! , details:String!) : Task!
+           deleteTask(_id:ID! , userId:ID!): deleteTask!
        }
     `)

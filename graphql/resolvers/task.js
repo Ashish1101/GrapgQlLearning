@@ -39,5 +39,30 @@ module.exports  = {
          } catch (err) {
              throw err
          }
+    },
+    deleteTask: async (args , req) => {
+        if(!req.isAuth) {
+            throw new Error("Unauthorized!")
+        }
+        try {
+            const user = await User.findById(args.userId);
+            if(!user) {
+                throw new Error("User not found")
+            } else {
+
+                //the line below finds the data in array 
+                //and remove it from array
+                user.tasks.pull({_id : args._id});
+                
+                const task = await Task.findById(args._id);
+                await user.save();
+                await task.remove();
+                // console.log(task)
+                return {msg : "deleted" , title : task.title , _id : task._id}
+            }
+
+        } catch (err) {
+            throw err;
+        }
     }
 }

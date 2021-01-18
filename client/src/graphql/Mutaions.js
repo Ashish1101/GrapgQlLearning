@@ -31,3 +31,13 @@ export const CREATE_TASK = gql`
        }
    }
 `
+
+export const DELETE_TASK = gql`
+   mutation deleteTask($_id:ID! , $userId:ID!) {
+      deleteTask(_id:$_id , userId:$userId) {
+        msg
+        title
+        _id
+      }
+   }
+`
