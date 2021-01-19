@@ -6,11 +6,50 @@ import { setContext } from '@apollo/client/link/context';
 import Login from './Components/Login'
 import Navigation from './Components/Navigation'
 import Todos from './Components/Todos'
+import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 
 const httpLink = createHttpLink({
   uri:"http://localhost:5000/graphql"
 })
+
+const cache = new InMemoryCache({
+  typePolicies :{
+     User: {  //typename from the backend
+       fields : {  //fields we want to include
+         loginId: { /*
+          field we included or we can say that local field 
+          not coming from the server
+           */
+           read(_ , {variables}){
+              return localStorage.getItem('userId')
+           }
+         },       
+        }
+     },
+     Task: {  //we can manupulate data before calling the query
+        fields: { //here i converted the title property
+          title:{  //of Task typename to UpperCase 
+            read(title) {
+              return title.toUpperCase()
+            }
+          }
+        }
+     }
+  }
+})
+
+//persist store persisted the cache 
+
+persistCache({
+  cache:cache,
+  storage: new LocalStorageWrapper(window.localStorage)
+}).then((result) => {
+  console.log('storage is persisted')
+  console.log('result from persisted store ->>>> ' , result)
+}).catch(err => console.log(err))
+
+
 
 const authLink = setContext((_ , {headers}) => {
   const token = localStorage.getItem('userToken');
@@ -23,31 +62,7 @@ const authLink = setContext((_ , {headers}) => {
 })
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache : new InMemoryCache({
-    typePolicies :{
-       User: {  //typename from the backend
-         fields : {  //fields we want to include
-           loginId: { /*
-            field we included or we can say that local field 
-            not coming from the server
-             */
-             read(_ , {variables}){
-                return localStorage.getItem('userId')
-             }
-           },       
-          }
-       },
-       Task: {  //we can manupulate data before calling the query
-          fields: { //here i converted the title property
-            title:{  //of Task typename to UpperCase 
-              read(title) {
-                return title.toUpperCase()
-              }
-            }
-          }
-       }
-    }
-  }),
+  cache : cache,
   connectToDevTools:true
 })
 
