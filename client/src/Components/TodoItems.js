@@ -1,5 +1,5 @@
 import React , {useEffect} from 'react'
-import {useMutation, useQuery} from '@apollo/client'
+import {useMutation, useQuery } from '@apollo/client'
 import {GET_ALL_TODO} from '../graphql/Query'
 import { Alert, Spinner , Table , Button } from 'reactstrap';
 import {DELETE_TASK} from '../graphql/Mutaions'
@@ -14,7 +14,16 @@ const TodoItems = () => {
     
     //will try to do that using cache write
 
-    const {data , error , fetchMore  } = useQuery(GET_ALL_TODO , {variables : {_id : userId}});
+    //fetchMore function return by query is used in case where app demands infinte scrolling
+
+    // const {data , error , fetchMore  } = useQuery(GET_ALL_TODO , {variables : {_id : userId} , fetchPolicy:'cache-and-network'});
+
+    //the fetchPolicy provides policy for query
+    //it says from which source we want our data
+    //from the cache or network or both
+
+
+    const {data , error   } = useQuery(GET_ALL_TODO , {variables : {_id : userId}});
     const [deleteTask , {loading}] = useMutation(DELETE_TASK , {
       refetchQueries : [{query : GET_ALL_TODO , variables : {_id :userId }}]
     })
