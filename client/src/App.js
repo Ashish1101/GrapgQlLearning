@@ -1,12 +1,11 @@
 import React from 'react'
-import {ApolloClient, InMemoryCache , ApolloProvider , createHttpLink, useApolloClient, gql } from '@apollo/client'
+import {ApolloClient, InMemoryCache , ApolloProvider , createHttpLink } from '@apollo/client'
 import {BrowserRouter as Router , Redirect, Route , Switch } from 'react-router-dom'
 import Register from './Components/Register'
 import { setContext } from '@apollo/client/link/context';
 import Login from './Components/Login'
 import Navigation from './Components/Navigation'
 import Todos from './Components/Todos'
-import { GET_ALL_TODO } from './graphql/Query';
 
 
 const httpLink = createHttpLink({
@@ -24,7 +23,31 @@ const authLink = setContext((_ , {headers}) => {
 })
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache : new InMemoryCache(),
+  cache : new InMemoryCache({
+    typePolicies :{
+       User: {  //typename from the backend
+         fields : {  //fields we want to include
+           loginId: { /*
+            field we included or we can say that local field 
+            not coming from the server
+             */
+             read(_ , {variables}){
+                return localStorage.getItem('userId')
+             }
+           },       
+          }
+       },
+       Task: {  //we can manupulate data before calling the query
+          fields: { //here i converted the title property
+            title:{  //of Task typename to UpperCase 
+              read(title) {
+                return title.toUpperCase()
+              }
+            }
+          }
+       }
+    }
+  }),
   connectToDevTools:true
 })
 
