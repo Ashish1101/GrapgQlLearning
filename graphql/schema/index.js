@@ -57,5 +57,6 @@ module.exports = buildSchema(`
            updateUser(input : userInput) : User
            createTask(title:String! , details:String!) : Task!
            deleteTask(_id:ID! , userId:ID!): deleteTask!
+           updateTask(_id:ID! , title:String! , details:String!):Boolean!
        }
     `)

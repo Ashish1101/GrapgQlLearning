@@ -3,7 +3,7 @@ import {useMutation, useQuery} from '@apollo/client'
 import {GET_ALL_TODO} from '../graphql/Query'
 import { Alert, Spinner , Table , Button } from 'reactstrap';
 import {DELETE_TASK} from '../graphql/Mutaions'
-
+import image from '../upload.png'
 
 
 const TodoItems = () => {
@@ -14,19 +14,18 @@ const TodoItems = () => {
     
     //will try to do that using cache write
 
-    const {data , error , loading} = useQuery(GET_ALL_TODO , {variables : {_id : userId}});
-    const [deleteTask] = useMutation(DELETE_TASK , {
+    const {data , error , fetchMore  } = useQuery(GET_ALL_TODO , {variables : {_id : userId}});
+    const [deleteTask , {loading}] = useMutation(DELETE_TASK , {
       refetchQueries : [{query : GET_ALL_TODO , variables : {_id :userId }}]
     })
+  
  
     
     useEffect(() => {
         console.log('tasks by user' , data);
     })
 
-    if(loading) {
-        return <Spinner color="black" />
-    }
+  
 
     const deleteItem = (postId) => {
       console.log('iam deleted');
@@ -34,12 +33,17 @@ const TodoItems = () => {
         {variables : {_id : postId , userId:userId}}
       ).then((result) => {
          console.log('from deleteItem ',result)
+        //  fetchMore();
+        //fetchmore function is used for pagination in graphql
       }).catch(err => console.log(err))
     }
     
     return (
         <div>
             {error && (<Alert color="danger">{error.message}</Alert>)}
+            {/* <p>{data?.tasksByUser?.loginId}</p> */}
+            <h4>Total Task : {}</h4>
+            
         <Table borderless>
       <thead>
         <tr>
@@ -59,6 +63,8 @@ const TodoItems = () => {
         </tr>))}
       </tbody>
     </Table>
+    {data?.tasksByUser?.tasks.length <= 0 ?  <img width="200" height="200" src={image}  alt="illustraion"/> : ""}
+    {loading && (<Spinner color="primary" />)}
         </div>
     )
 }

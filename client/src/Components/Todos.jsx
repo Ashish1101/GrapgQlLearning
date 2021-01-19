@@ -73,14 +73,15 @@ const Todos = () => {
 			.catch((err) => console.log(err));
 	};
 
-	if (loading) {
-		return <Spinner color='black' />;
-	}
+	// if (loading) {
+	// 	return <Spinner color='black' />;
+	// }
 
 	return (
 		<div style={{ display: "flex", justifyContent: "space-around" }}>
 			<Form onSubmit={submitForm}>
 				{error && <Alert color='danger'>{error.message}</Alert>}
+				{loading && (<Spinner color="success" />)}
 				<FormGroup>
 					<Label>Title</Label>
 					<Input

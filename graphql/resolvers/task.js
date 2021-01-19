@@ -64,5 +64,27 @@ module.exports  = {
         } catch (err) {
             throw err;
         }
+    },
+    updateTask : async (args , req) => {
+        // if(!req.isAuth) {
+        //     throw new Error('unauthorized!')
+        // }
+        try {
+            const task = await Task.findById(args._id);
+            if(!task) {
+                throw new Error('Task not found');
+            } else {
+                await Task.updateOne(
+                    {_id : task._id},
+                    {$set: {title:args.title , details:args.details}},
+                    {new : true}
+                );
+
+                return true;
+
+            }
+        } catch (err) {
+            throw err
+        }
     }
 }
