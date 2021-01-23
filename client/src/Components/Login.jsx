@@ -1,7 +1,8 @@
 import React , {  useState } from 'react'
-import { useMutation} from '@apollo/client'
+import { useMutation, useQuery} from '@apollo/client'
 import { Button, Form, FormGroup, Label, Input , Spinner, Alert } from 'reactstrap';
 import {LOGIN_USER} from '../graphql/Mutaions'
+import {darkMode as ToogleMode , GET_DARK_MODE} from '../graphql/ReactVar'
 
 
 
@@ -21,6 +22,8 @@ const Login = () => {
       }
     }});
     // const token = localStorage.getItem('userToken')
+
+    const {data : {darkMode}} = useQuery(GET_DARK_MODE)
   
     
     const submitForm = (e) => {
@@ -45,11 +48,20 @@ const Login = () => {
       console.log('loading....')
       return <Spinner color="black" />
     }
+
+    
+   
+    const changeDarkMode = () => {
+      console.log(darkMode);
+      ToogleMode(!darkMode);
+    }
+
     return (
       <div style={{top:"30%" , left:"35%", position:"absolute"}}>
         {error && <Alert color="danger">{error?.message}</Alert>}
         {data && <Alert color="success">{data?.login?.msg}</Alert>}
-        <h4>Login</h4>
+        {darkMode === true ? (<Button color="primary" onClick={changeDarkMode}>Disable DarkMode</Button>):(<Button color="danger" onClick={changeDarkMode}>Enable DarkMode</Button>)}
+        {darkMode === true ? ( <h4 style={{color:"green"}}>Login</h4>) : ( <h4 style={{color:"red"}}>Login</h4>)}
         <Form onSubmit={submitForm}>
         <FormGroup>
           <Label for="exampleEmail">Email</Label>

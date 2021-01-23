@@ -7,6 +7,8 @@ import Login from './Components/Login'
 import Navigation from './Components/Navigation'
 import Todos from './Components/Todos'
 import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
+import {darkMode} from './graphql/ReactVar'
+
 
 
 const httpLink = createHttpLink({
@@ -24,7 +26,7 @@ const cache = new InMemoryCache({
            read(_ , {variables}){
               return localStorage.getItem('userId')
            }
-         },       
+         }      
         }
      },
      Task: {  //we can manupulate data before calling the query
@@ -35,6 +37,15 @@ const cache = new InMemoryCache({
             }
           }
         }
+     },
+     Query: {
+       fields : {
+         darkMode :{
+           read() {
+             return darkMode()
+           }
+         }
+       }
      }
   }
 })
@@ -75,7 +86,9 @@ function App() {
 
   const token = localStorage.getItem('userToken')
   return (
-    <ApolloProvider client={client}>
+    
+      <ApolloProvider client={client}>
+     
       <Router>
       <Navigation />
          <Switch>
